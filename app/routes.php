@@ -16,11 +16,10 @@ $app
     )
     ->setName('home')
 ;
-
 // Projects
 $app
     ->get(
-        '/projects',
+        '/sports/',
         function(Request $request, Response $response)
         {
             // Fetch promotions
@@ -33,15 +32,37 @@ $app
             ];
 
             // Render
-            return $this->view->render($response, 'pages/projects.twig', $dataView);
+            return $this->view->render($response, 'pages/sports.twig', $dataView);
         }
     )
-    ->setName('projects')
+    ->setName('sports')
+;
+
+// Projects
+$app
+    ->get(
+        '/sports/slug[A-Ba-b]/',
+        function(Request $request, Response $response)
+        {
+            // Fetch promotions
+            $query = $this->db->query('SELECT * FROM projects');
+            $projects = $query->fetchAll();
+
+            // Data view
+            $dataView = [
+                'projects' => $projects,
+            ];
+
+            // Render
+            return $this->view->render($response, 'pages/entrySport.twig', $dataView);
+        }
+    )
+    ->setName('entrySport')
 ;
 // Project
 $app
     ->get(
-        '/projects/project/{id:[0-9_-]+}',
+        '/sports/slug[A-Ba-b]/place/slug[0-9]/',
         function(Request $request, Response $response, $arguments)
         {
             // Fetch projects
@@ -56,62 +77,30 @@ $app
             ];
 
             // Render
-            return $this->view->render($response, 'pages/project.twig', $dataView);
+            return $this->view->render($response, 'pages/selectedSport.twig', $dataView);
         }
     )
-    ->setName('project')
+    ->setName('place')
 ;
 
 // Clients
 $app
     ->get(
-        '/clients',
+        '/sports/slug[A-Ba-b]/place/slug[0-9]/case/slug[0-9]',
         function(Request $request, Response $response, $arguments)
         {
             // Fetch clients
-            $query = $this->db->query('SELECT * FROM clients');
+            $query = $this->db->query('SELECT * FROM ');
             $clients = $query->fetchAll();
 
             // Data view
             $dataView = [
-                'clients' => $clients,
-                'project'=>  $project
+
             ];
 
             // Render
-            return $this->view->render($response, 'pages/clients.twig', $dataView);
+            return $this->view->render($response, 'pages/case.twig', $dataView);
         }
     )
-    ->setName('clients')
-;
-
-// Client
-$app
-    ->get(
-        '/clients/{id_client:[0-9_-]+}',
-        function(Request $request, Response $response, $arguments)
-        {
-            // Fetch projects
-            $prepare = $this->db->prepare('SELECT * FROM projects WHERE id_client = :id_client');
-            $prepare->bindValue('id_client', $arguments['id_client']);
-            $prepare->execute();
-            $project = $prepare->fetch();
-
-            // Fetch client
-            $prepare = $this->db->prepare('SELECT * FROM clients WHERE id = :id');
-            $prepare->bindValue('id', $project->id_client);
-            $prepare->execute();
-            $client = $prepare->fetch();
-
-            // Data view
-            $dataView = [
-                'project' => $project,
-                'client' => $client
-            ];
-
-            // Render
-            return $this->view->render($response, 'pages/client.twig', $dataView);
-        }
-    )
-    ->setName('client')
+    ->setName('case')
 ;
