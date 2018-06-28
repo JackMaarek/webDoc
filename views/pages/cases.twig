@@ -1,0 +1,10 @@
+{{ include('partials/header.twig') }}
+{{ include('partials/menu.twig') }}
+
+<p>case</p>
+
+{% for _case in case %}
+{{ _case.sport_id }}
+{% endfor %}
+
+{{ include('partials/footer.twig') }}

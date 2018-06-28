@@ -66,7 +66,7 @@ $app
 // Places Selection
 $app
     ->get(
-        '/sports/{sport}/places',
+        '/places/{id_place:[a-zA-Z0-9_-]+}',
         function(Request $request, Response $response, $arguments)
         {
             /** @var PDOStatement $prepare */
@@ -77,7 +77,7 @@ $app
             $places = $prepare->fetch();
 
             $prepare = $this->db->prepare('SELECT * FROM cases WHERE id_place = id_place');
-            $prepare->bindValue('id_place', $places->id_place);
+            $prepare->bindValue('id_place', $arguments['id_place']);
             $prepare->execute();
             $place = $prepare->fetch();
 
@@ -107,7 +107,7 @@ $app
 // Case Selection
 $app
     ->get(
-        '/sports/{sport:[a-zA-Z]}/id_place}',
+        '/case/{id_case:[a-zA-Z0-9_-]+}',
         function(Request $request, Response $response, $arguments)
         {
 
@@ -124,9 +124,8 @@ $app
             $prepare->execute();
             $place = $prepare->fetch();
 
-            $prepare = $this->db->prepare('SELECT * FROM cases WHERE sport_id = :sport_id and id_place = :id_place');
-            $prepare->bindValue('sport_id', $arguments['sport']);
-            $prepare->bindValue('id_place',$place->id_place);
+            $prepare = $this->db->prepare('SELECT * FROM cases WHERE id_case = :id_case');
+            $prepare->bindValue('id_case',$place->id_case);
             $prepare->execute();
             $cases = $prepare->fetchAll();
 
@@ -135,7 +134,7 @@ $app
             $dataView = [
                 'places'=>$places,
                 'place'=>$place,
-                'case'=>$case,
+                'cases'=>$cases,
 
             ];
             // Render

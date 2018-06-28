@@ -4,7 +4,7 @@
 <p>selectedSports</p>
 {% for place in places %}
 {{ place.id_place }}
-    <a href="{{ path_for('place', {sport :place.sport_id}) }}">{{ place.id_place }}</a>
+    <a href="{{ path_for('place', {id_place :place.id_place}) }}">{{ place.id_place }}</a>
 {% endfor %}
 
 <p>ola</p>

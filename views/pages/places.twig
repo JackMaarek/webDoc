@@ -1,0 +1,10 @@
+{{ include('partials/header.twig') }}
+{{ include('partials/menu.twig') }}
+
+<p>selectedPlace</p>
+
+{% for case in cases %}
+    <a href="{{ path_for('cases',{ id_case :case.id_case}) }}">{{ case.id_case}}</a>
+{% endfor %}
+
+{{ include('partials/footer.twig') }}
