@@ -10,4 +10,4 @@ $settings['db']         = [];
 $settings['db']['host'] = 'localhost';
 $settings['db']['user'] = 'root';
 $settings['db']['pass'] = 'root';
-$settings['db']['name'] = 'protfolio';
+$settings['db']['name'] = 'sportCorruption';

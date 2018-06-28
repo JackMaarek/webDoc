@@ -16,19 +16,20 @@ $app
     )
     ->setName('home')
 ;
-// Projects
+
+// Sports selection
 $app
     ->get(
-        '/sports/',
+        '/sports',
         function(Request $request, Response $response)
         {
-            // Fetch promotions
-            $query = $this->db->query('SELECT * FROM projects');
-            $projects = $query->fetchAll();
+            // Fetch sports
+            $query = $this->db->query('SELECT * FROM sportTable');
+            $sports = $query->fetchAll();
 
             // Data view
             $dataView = [
-                'projects' => $projects,
+                'sports' => $sports,
             ];
 
             // Render
@@ -38,69 +39,108 @@ $app
     ->setName('sports')
 ;
 
-// Projects
+// Selected sport
 $app
     ->get(
-        '/sports/slug[A-Ba-b]/',
-        function(Request $request, Response $response)
-        {
-            // Fetch promotions
-            $query = $this->db->query('SELECT * FROM projects');
-            $projects = $query->fetchAll();
+        '/sports/{sport:[a-zA-Z0-9_-]+}',
+        function(Request $request, Response $response, $arguments){
 
-            // Data view
-            $dataView = [
-                'projects' => $projects,
-            ];
-
-            // Render
-            return $this->view->render($response, 'pages/entrySport.twig', $dataView);
-        }
-    )
-    ->setName('entrySport')
-;
-// Project
-$app
-    ->get(
-        '/sports/slug[A-Ba-b]/place/slug[0-9]/',
-        function(Request $request, Response $response, $arguments)
-        {
-            // Fetch projects
-            $prepare = $this->db->prepare('SELECT * FROM projects WHERE id = :id');
-            $prepare->bindValue('id', $arguments['id']);
+            /** @var PDOStatement $prepare */
+            // Fetch places
+            $prepare = $this->db->prepare('SELECT * FROM places WHERE sport_id = :sport_id');
+            $prepare->bindValue('sport_id', $arguments['sport']);
             $prepare->execute();
-            $project = $prepare->fetch();
+            $places = $prepare->fetchAll();
 
             // Data view
             $dataView = [
-                'project' => $project,
+                'places'=>$places,
             ];
-
             // Render
             return $this->view->render($response, 'pages/selectedSport.twig', $dataView);
+        }
+    )
+    ->setName('selectedSport')
+;
+
+// Places Selection
+$app
+    ->get(
+        '/sports/{sport}/places',
+        function(Request $request, Response $response, $arguments)
+        {
+            /** @var PDOStatement $prepare */
+            // Fetch places
+            $prepare = $this->db->prepare('SELECT * FROM places WHERE sport_id = :sport_id');
+            $prepare->bindValue('sport_id', $arguments['sport']);
+            $prepare->execute();
+            $places = $prepare->fetch();
+
+            $prepare = $this->db->prepare('SELECT * FROM cases WHERE id_place = id_place');
+            $prepare->bindValue('id_place', $places->id_place);
+            $prepare->execute();
+            $place = $prepare->fetch();
+
+            $prepare = $this->db->prepare('SELECT * FROM cases WHERE sport_id = :sport_id and id_place = :id_place');
+            $prepare->bindValue('sport_id', $place->sport_id);
+            $prepare->bindValue('id_place',$place->id_place);
+            $prepare->execute();
+            $cases = $prepare->fetchAll();
+
+            echo '<pre>';
+            var_dump($cases);
+            echo '</pre>';
+
+            // Data view
+            $dataView = [
+                'places'=>$places,
+                'place'=>$place,
+                'cases'=>$cases,
+            ];
+            // Render
+            return $this->view->render($response, 'pages/places.twig', $dataView);
         }
     )
     ->setName('place')
 ;
 
-// Clients
+// Case Selection
 $app
     ->get(
-        '/sports/slug[A-Ba-b]/place/slug[0-9]/case/slug[0-9]',
+        '/sports/{sport:[a-zA-Z]}/id_place}',
         function(Request $request, Response $response, $arguments)
         {
-            // Fetch clients
-            $query = $this->db->query('SELECT * FROM ');
-            $clients = $query->fetchAll();
+
+            // Fetch sports
+            /** @var PDOStatement $prepare */
+            // Fetch places
+            $prepare = $this->db->prepare('SELECT * FROM cases WHERE sport_id = :sport_id');
+            $prepare->bindValue('sport_id', $arguments['sport']);
+            $prepare->execute();
+            $places = $prepare->fetch();
+
+            $prepare = $this->db->prepare('SELECT * FROM cases WHERE id_place = :id_place ');
+            $prepare->bindValue('id_place', $arguments['id_place']);
+            $prepare->execute();
+            $place = $prepare->fetch();
+
+            $prepare = $this->db->prepare('SELECT * FROM cases WHERE sport_id = :sport_id and id_place = :id_place');
+            $prepare->bindValue('sport_id', $arguments['sport']);
+            $prepare->bindValue('id_place',$place->id_place);
+            $prepare->execute();
+            $cases = $prepare->fetchAll();
+
 
             // Data view
             $dataView = [
+                'places'=>$places,
+                'place'=>$place,
+                'case'=>$case,
 
             ];
-
             // Render
-            return $this->view->render($response, 'pages/case.twig', $dataView);
+            return $this->view->render($response, 'pages/cases.twig', $dataView);
         }
     )
-    ->setName('case')
+    ->setName('cases')
 ;

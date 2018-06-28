@@ -1,0 +1,12 @@
+{{ include('partials/header.twig') }}
+{{ include('partials/menu.twig') }}
+
+<p>selectedSports</p>
+{% for place in places %}
+{{ place.id_place }}
+    <a href="{{ path_for('place', {sport :place.sport_id}) }}">{{ place.id_place }}</a>
+{% endfor %}
+
+<p>ola</p>
+
+{{ include('partials/footer.twig') }}
